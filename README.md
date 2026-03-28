@@ -2,7 +2,7 @@
 
 Automatically dub YouTube videos with synchronized Vietnamese TTS.
 
-https://github.com/drminh2807/vi-dubber/raw/refs/heads/main/demo.webm
+https://github.com/user-attachments/assets/8999774f-5b31-437a-be3a-c2e1b85fd149
 
 **Pipeline:**
 
