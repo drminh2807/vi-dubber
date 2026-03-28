@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vi-dubber"
+version = "0.1.0"
+description = "Dub YouTube videos with synchronized Vietnamese TTS"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+keywords = ["youtube", "tts", "vietnamese", "dubbing", "subtitles"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+    "Topic :: Multimedia :: Video",
+]
+dependencies = [
+    "yt-dlp>=2026.3.0",
+    "vieneu>=1.3.0",
+    "librosa>=0.11.0",
+    "soundfile>=0.12.1",
+    "numpy>=1.24",
+    "scipy>=1.6.0",
+    "soxr>=0.3.2",
+]
+
+[project.scripts]
+vi-dubber = "vi_dubber.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/drminh2807/vi-dubber"
+Issues   = "https://github.com/drminh2807/vi-dubber/issues"
+
+[tool.setuptools.packages.find]
+include = ["vi_dubber*"]

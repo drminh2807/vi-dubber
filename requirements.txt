@@ -1,0 +1,23 @@
+# Core runtime dependencies (pinned for reproducibility)
+# Install: pip install -r requirements.txt
+
+# ── YouTube downloader (always upgrade before use) ────────────────────────────
+# See README for upgrade instructions.
+yt-dlp>=2026.3.17
+
+# ── Vietnamese TTS ────────────────────────────────────────────────────────────
+# macOS Apple Silicon (Metal): install from the Metal wheel index
+# pip install vieneu --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/metal/
+# Other platforms: pip install vieneu
+vieneu==1.3.0
+
+# ── Audio processing ──────────────────────────────────────────────────────────
+librosa==0.11.0
+soundfile==0.13.1
+numpy==2.4.3
+scipy==1.17.1
+soxr==1.0.0
+numba==0.64.0
+
+# ── CLI / terminal UI ─────────────────────────────────────────────────────────
+rich==14.3.3

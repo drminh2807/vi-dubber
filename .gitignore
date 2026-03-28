@@ -1,1 +1,37 @@
-venv
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+
+# Output files (video, audio, subtitles)
+Output/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Jupyter (notebook kept for reference but not tracked)
+*.ipynb
+.ipynb_checkpoints/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
