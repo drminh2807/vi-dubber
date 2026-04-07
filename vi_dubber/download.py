@@ -30,15 +30,15 @@ def _vtt_exists_for_id(output_dir: Path, video_id: str) -> bool:
     return any(True for _ in output_dir.glob(f"*{video_id}*.vi.vtt"))
 
 
-def download_with_subs(urls: list[str], output_dir: Path) -> None:
+def download_with_subs(urls: list[str], output_dir: Path) -> list[Path]:
     """Download video + Vietnamese subtitles for each URL.
 
-    Tries language ``vi`` first; falls back to ``vi-en`` (auto-translated).
-    Any ``*.vi-en.vtt`` files are renamed to ``*.vi.vtt`` so downstream
-    steps always read ``*.vi.vtt``.
-
+    Downloads both manual and auto-generated subtitles for language ``vi``.
     Skips a URL if a ``*.vi.vtt`` file whose name contains that video's ID
     already exists in *output_dir*.
+
+    Returns the list of ``.vi.vtt`` paths that correspond to the requested
+    URLs (already-existing files are included).
     """
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -53,39 +53,36 @@ def download_with_subs(urls: list[str], output_dir: Path) -> None:
         else:
             pending.append(url)
 
-    if not pending:
-        return
-
-    for lang in ("vi", "vi-en"):
+    if pending:
         urls_still_needed = [
             u for u in pending
             if not (vid_id := url_ids.get(u)) or not _vtt_exists_for_id(output_dir, vid_id)
         ]
-        if not urls_still_needed:
-            break
+        if urls_still_needed:
+            quiet = not _verbose()
+            opts: dict = {
+                "paths": {"home": str(output_dir)},
+                "writesubtitles": True,
+                "writeautomaticsub": True,
+                "subtitleslangs": ["vi"],
+                "skip_download": False,
+                "ignoreerrors": True,
+                "quiet": quiet,
+                "no_warnings": quiet,
+                "sleep_interval_subtitles": 1,
+                "retries": 5,
+                "fragment_retries": 5,
+            }
+            console.print(f"[cyan][download][/cyan] Trying subtitle lang [vi] for {len(urls_still_needed)} URL(s) …")
+            with YoutubeDL(opts) as ydl:
+                ydl.download(urls_still_needed)
 
-        quiet = not _verbose()
-        opts: dict = {
-            "paths": {"home": str(output_dir)},
-            "writesubtitles": True,
-            "writeautomaticsub": True,
-            "subtitleslangs": [lang],
-            "skip_download": False,
-            "ignoreerrors": True,
-            "quiet": quiet,
-            "no_warnings": quiet,
-        }
-        console.print(f"[cyan][download][/cyan] Trying subtitle lang [{lang}] for {len(urls_still_needed)} URL(s) …")
-        with YoutubeDL(opts) as ydl:
-            ydl.download(urls_still_needed)
+    # Collect only the .vi.vtt files that belong to the requested URLs.
+    result: list[Path] = []
+    for vid_id in url_ids.values():
+        if vid_id:
+            matches = sorted(output_dir.glob(f"*{vid_id}*.vi.vtt"))
+            result.extend(matches)
 
-        for f in list(output_dir.glob("*.vtt")):
-            stem = f.stem
-            if stem.endswith(".vi-en"):
-                target = f.parent / (stem[: -len(".vi-en")] + ".vi.vtt")
-                if not target.exists():
-                    f.rename(target)
-                    console.print(f"  Renamed: {f.name} → {target.name}")
-
-    vi_vtts = sorted(output_dir.glob("*.vi.vtt"))
-    console.print(f"[green]✓[/green] {len(vi_vtts)} .vi.vtt file(s) ready.")
+    console.print(f"[green]✓[/green] {len(result)} .vi.vtt file(s) ready.")
+    return result

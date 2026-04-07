@@ -103,7 +103,7 @@ def merge_audio(
             fc = (
                 f"[0:a]volume={orig_volume}[a_orig];"
                 f"{tts_filt};"
-                "[a_orig][a_tts]amix=inputs=2:duration=first:dropout_transition=0[a_out]"
+                "[a_orig][a_tts]amix=inputs=2:duration=first:dropout_transition=0:normalize=0[a_out]"
             )
         else:
             fc = tts_filt.replace("[a_tts]", "[a_out]")
