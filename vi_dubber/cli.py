@@ -75,10 +75,11 @@ def _step_header(n: int, label: str, detail: str = "") -> None:
     console.print(f"\n[bold cyan]Step {n}/4 — {label}[/bold cyan]{suffix}")
 
 
-def _run_normalize(output_dir: Path) -> None:
+def _run_normalize(output_dir: Path, vtts: list[Path] | None = None) -> None:
     from vi_dubber.subtitle import sentences_with_timing, write_normalized_vtt
 
-    vtts = sorted(output_dir.glob("*.vi.vtt"))
+    if vtts is None:
+        vtts = sorted(output_dir.glob("*.vi.vtt"))
     if not vtts:
         console.print("[yellow][normalize] No *.vi.vtt found — run 'download' first.[/yellow]")
         return
@@ -123,10 +124,10 @@ def _run_pipeline(urls: list[str], output_dir: Path, orig_volume: float) -> None
     ))
 
     _step_header(1, "Download", "video + subtitles via yt-dlp")
-    download_with_subs(urls, output_dir)
+    vtts = download_with_subs(urls, output_dir)
 
     _step_header(2, "Normalize", "karaoke VTT → sentence-level timing")
-    _run_normalize(output_dir)
+    _run_normalize(output_dir, vtts)
 
     _step_header(3, "TTS", "Vietnamese speech synthesis")
     _run_tts(output_dir)
